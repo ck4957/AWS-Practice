@@ -1,0 +1,61 @@
+#================================================================================================================================
+## Find expensive request for Firely Api Call Ingestion
+fields @timestamp, @requestId, @logStream
+| filter @message like /Total duration: /
+#| parse @message 'CDX FHIR Ingestion: Service Ended. Total duration: * ms' as IngestionServiceDuration
+#| filter IngestionFirelyApiDuration > 1200
+#| sort by IngestionServiceDuration desc
+| limit 20
+
+#================================================================================================================================
+## Find expensive request for Validation 
+# fields @timestamp, @requestId,@logStream
+# | filter @message like /CDX FHIR Validation: Service Ended. Total duration:/
+# | parse @message 'CDX FHIR Validation: Service Ended. Total duration: * ms' as ValidationServiceDuration
+# | filter ValidationServiceDuration > 1200
+# | sort by ValidationServiceDuration desc
+# | limit 50
+
+#================================================================================================================================
+## Avg Duration for all 3 function
+# filter @type = "REPORT" 
+#     | parse @log /^.*\/aws\/lambda\/(?<functionName>.*)/
+#     | stats min(@duration/1000) as MinDurationInSec, avg(@duration / 1000) as AvgDurationInSec, max(@duration / 1000 ) as MaxDurationinSec,
+#  max(@memorySize / 1000 / 1000) as provisonedMemoryMB,  
+#         min(@maxMemoryUsed / 1000 / 1000) as smallestMemoryRequestMB,   
+#         avg(@maxMemoryUsed / 1000 / 1000) as avgMemoryUsedMB,   
+#         max(@maxMemoryUsed / 1000 / 1000) as maxMemoryUsedMB  by functionName
+
+#================================================================================================================================
+# fields @timestamp, @requestId, @message
+# #| filter @message like /CDX FHIR Ingestion: Firely POST API Request Ended. Total duration/
+# | parse @message 'CDX FHIR Ingestion: Firely POST API Request Ended. Total duration: * ms' as IngestionFirelyApiDuration
+
+# #| filter @message like /CDX FHIR Ingestion: Service Ended. Total duration:/
+# | parse @message 'CDX FHIR Ingestion: Service Ended. Total duration: * ms' as IngestionServiceDuration
+
+# #| filter @message like /CDX FHIR Validation: Process Validation Response Ended. Total duration:/
+# | parse @message 'CDX FHIR Validation: Process Validation Response Ended. Total duration: * ms' as ValidationFirelyApiDuration
+
+# #| filter @message like /CDX FHIR Validation: Service Ended. Total duration:/
+# | parse @message 'CDX FHIR Validation: Service Ended. Total duration: * ms' as ValidationServiceDuration
+# | parse @log /^.*\/aws\/lambda\/(?<functionName>.*)/
+# | stats 
+# avg(IngestionFirelyApiDuration/1000) as AvgIngestionFirelyApiDuration, 
+# min(IngestionFirelyApiDuration/1000) as MinIngestionFirelyApiDuration, 
+# max(IngestionFirelyApiDuration/1000) as MaxIngestionFirelyApiDuration,
+
+# avg(IngestionServiceDuration/1000) as AvgIngestionServiceDuration, 
+# min(IngestionServiceDuration/1000) as MinIngestionServiceDuration, 
+# max(IngestionServiceDuration/1000) as MaxIngestionServiceDuration,
+
+# avg(ValidationFirelyApiDuration/1000) as AvgValidationFirelyApiDuration, 
+# min(ValidationFirelyApiDuration/1000) as MinValidationFirelyApiDuration, 
+# max(ValidationFirelyApiDuration/1000) as MaxValidationFirelyApiDuration,
+
+# avg(ValidationServiceDuration/1000) as AvgValidationServiceDuration, 
+# min(ValidationServiceDuration/1000) as MinValidationServiceDuration, 
+# max(ValidationServiceDuration/1000) as MaxValidationServiceDuration
+# by functionName, bin(2m)
+
+#================================================================================================================================
