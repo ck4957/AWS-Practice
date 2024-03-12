@@ -1,0 +1,11 @@
+CDK Commands:
+cdk init app --language typescript
+cdk bootstrap
+cdk synth  // Dry Run before deploying
+cdk deploy
+
+cdk list // will list local resources
+cdk diff // show differences between local cdk vs what's deployed
+
+cdk doctor // shows if anything wrong with stack sets
+cdk destroy <stackname> // to delete a stack
