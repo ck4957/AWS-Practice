@@ -1,6 +1,5 @@
 import os
-import jwt
-import requests
+from packages import jwt, requests
 from auth_policy import AuthPolicy, HttpVerb
 
 API_GATEWAY = {
