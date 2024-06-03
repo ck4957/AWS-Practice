@@ -1,20 +1,11 @@
 #================================================================================================================================
-## Find expensive request for Firely Api Call Ingestion
+## Find expensive request for Api Call
 fields @timestamp, @requestId, @logStream
 | filter @message like /Total duration: /
-#| parse @message 'CDX FHIR Ingestion: Service Ended. Total duration: * ms' as IngestionServiceDuration
-#| filter IngestionFirelyApiDuration > 1200
-#| sort by IngestionServiceDuration desc
+#| parse @message 'Total duration: * ms' as ServiceDuration
+#| filter ApiDuration > 1200
+#| sort by ServiceDuration desc
 | limit 20
-
-#================================================================================================================================
-## Find expensive request for Validation 
-# fields @timestamp, @requestId,@logStream
-# | filter @message like /CDX FHIR Validation: Service Ended. Total duration:/
-# | parse @message 'CDX FHIR Validation: Service Ended. Total duration: * ms' as ValidationServiceDuration
-# | filter ValidationServiceDuration > 1200
-# | sort by ValidationServiceDuration desc
-# | limit 50
 
 #================================================================================================================================
 ## Avg Duration for all 3 function
@@ -28,34 +19,34 @@ fields @timestamp, @requestId, @logStream
 
 #================================================================================================================================
 # fields @timestamp, @requestId, @message
-# #| filter @message like /CDX FHIR Ingestion: Firely POST API Request Ended. Total duration/
-# | parse @message 'CDX FHIR Ingestion: Firely POST API Request Ended. Total duration: * ms' as IngestionFirelyApiDuration
+# #| filter @message like /POST API Request Ended. Total duration/
+# | parse @message 'POST API Request Ended. Total duration: * ms' as Api1duration
 
-# #| filter @message like /CDX FHIR Ingestion: Service Ended. Total duration:/
-# | parse @message 'CDX FHIR Ingestion: Service Ended. Total duration: * ms' as IngestionServiceDuration
+# #| filter @message like /Service Ended. Total duration:/
+# | parse @message 'Service Ended. Total duration: * ms' as Api2duration
 
-# #| filter @message like /CDX FHIR Validation: Process Validation Response Ended. Total duration:/
-# | parse @message 'CDX FHIR Validation: Process Validation Response Ended. Total duration: * ms' as ValidationFirelyApiDuration
+# #| filter @message like /Response Ended. Total duration:/
+# | parse @message 'CResponse Ended. Total duration: * ms' as Api3duration
 
-# #| filter @message like /CDX FHIR Validation: Service Ended. Total duration:/
-# | parse @message 'CDX FHIR Validation: Service Ended. Total duration: * ms' as ValidationServiceDuration
+# #| filter @message like /Service Ended. Total duration:/
+# | parse @message 'Service Ended. Total duration: * ms' as ServiceDuration
 # | parse @log /^.*\/aws\/lambda\/(?<functionName>.*)/
 # | stats 
-# avg(IngestionFirelyApiDuration/1000) as AvgIngestionFirelyApiDuration, 
-# min(IngestionFirelyApiDuration/1000) as MinIngestionFirelyApiDuration, 
-# max(IngestionFirelyApiDuration/1000) as MaxIngestionFirelyApiDuration,
+# avg(ApiDuration/1000) as AvgApiDuration, 
+# min(ApiDuration/1000) as MinApiDuration, 
+# max(ApiDuration/1000) as MaxApiDuration,
 
-# avg(IngestionServiceDuration/1000) as AvgIngestionServiceDuration, 
-# min(IngestionServiceDuration/1000) as MinIngestionServiceDuration, 
-# max(IngestionServiceDuration/1000) as MaxIngestionServiceDuration,
+# avg(ServiceDuration/1000) as AvgServiceDuration, 
+# min(ServiceDuration/1000) as MinServiceDuration, 
+# max(ServiceDuration/1000) as MaxServiceDuration,
 
-# avg(ValidationFirelyApiDuration/1000) as AvgValidationFirelyApiDuration, 
-# min(ValidationFirelyApiDuration/1000) as MinValidationFirelyApiDuration, 
-# max(ValidationFirelyApiDuration/1000) as MaxValidationFirelyApiDuration,
+# avg(ApiDuration/1000) as AvgApiDuration, 
+# min(ApiDuration/1000) as MinApiDuration, 
+# max(ApiDuration/1000) as MaxApiDuration,
 
-# avg(ValidationServiceDuration/1000) as AvgValidationServiceDuration, 
-# min(ValidationServiceDuration/1000) as MinValidationServiceDuration, 
-# max(ValidationServiceDuration/1000) as MaxValidationServiceDuration
+# avg(ServiceDuration/1000) as AvgServiceDuration, 
+# min(ServiceDuration/1000) as MinServiceDuration, 
+# max(ServiceDuration/1000) as MaxServiceDuration
 # by functionName, bin(2m)
 
 #================================================================================================================================
